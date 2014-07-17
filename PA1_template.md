@@ -4,13 +4,15 @@
 
 Read the data directly from the zip-compressed file.
 
-```{r readdata, echo=TRUE}
+
+```r
 data <- read.csv(unzip('activity.zip'))
 ```
 
 Process dates into a more suitable format.
 
-```{r dateparsing, echo=TRUE}
+
+```r
 data$date <- as.Date(data$date, format = "%Y-%m-%d")
 ```
 
@@ -20,7 +22,8 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 
   The following code breaks the data using the date information and sums all the steps for the same day:
 
-    ```{r histogram, echo = TRUE}
+    
+    ```r
     stepsPerDay <- with(data, aggregate(steps, 
                                     by = list(data$date), 
                                     FUN = sum, na.rm = TRUE))
@@ -28,19 +31,30 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
     stepsPerDay <- stepsPerDay$x
     hist(stepsPerDay, breaks = length(days))
     ```
+    
+    ![plot of chunk histogram](figure/histogram.png) 
 
 2. Calculate the *mean* and *median* total number of steps taken per day.
         
-    ```{r simplestats, echo =  TRUE, results = "asis"}
+    
+    ```r
     mean(stepsPerDay)
+    ```
+    
+    [1] 9354
+    
+    ```r
     median(stepsPerDay)
     ```
+    
+    [1] 10395
 
 ## What is the average daily activity pattern?
 
 1. Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
 
-    ```{r avgsteps, echo = TRUE}
+    
+    ```r
     meanStepsPerInterval <- aggregate(data$steps, 
                                             by = list(data$interval), 
                                             FUN = mean, na.rm=TRUE)
@@ -48,11 +62,18 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
     meanStepsPerInterval <- meanStepsPerInterval$x
     plot(intervalID, meanStepsPerInterval, type="l")
     ```
+    
+    ![plot of chunk avgsteps](figure/avgsteps.png) 
 
 2. Which 5-minute interval, on average across all the days in the data set, contains the maximum number of steps?
         
-    ```{r maxinterval, echo = TRUE}
+    
+    ```r
     intervalID[which(meanStepsPerInterval == max(meanStepsPerInterval))]
+    ```
+    
+    ```
+    ## [1] 835
     ```
 
 
@@ -60,7 +81,8 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 
 1. Total number of missing values in the data set.
 
-    ```{r totalNAs, echo = TRUE}
+    
+    ```r
     naIdx <- which(is.na(data))
     numNA <- sum(naIdx)
     ```
@@ -68,7 +90,8 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 
 2. Fill in all the missing values in the data set. For example, using the mean value in each 5-minute interval:
 
-    ```{r fillNAs, echo = TRUE}
+    
+    ```r
     # intervals of the NA values
     naInterval <- data$interval[naIdx]
     # get corresponding mean value for each interval
@@ -77,11 +100,11 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
             itv <- naInterval[i]
             naValue[i] <- meanStepsPerInterval[ which(itv == intervalID) ]
             }
-    
     ```
 
 3. New data set with missing values filled:
-    ```{r filldataset, echo = TRUE}
+    
+    ```r
     data.completed <- data
     data.completed$steps[naIdx] <- naValue
     ```
@@ -91,7 +114,8 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
   Summing up all the steps for each day:
 
 
-    ```{r histogram3, echo = TRUE}
+    
+    ```r
     stepsPerDay2 <- with(data.completed, aggregate(steps, 
                                     by = list(data$date), 
                                     FUN = sum))
@@ -99,24 +123,29 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
     stepsPerDay2 <- stepsPerDay2$x
     hist(stepsPerDay2, breaks = length(days2))
     ```
-    ```{r mean2, results = 'asis', echo = TRUE}
+    
+    ![plot of chunk histogram3](figure/histogram3.png) 
+    
+    ```r
     mean(stepsPerDay2)
+    ```
+    
+    [1] 10766
+    
+    ```r
     median(stepsPerDay2)
-   ```
+    ```
+    
+    [1] 10766
 
   The following table summarizes the results obtained before and after filling the missing values:
 
-    ```{r table, echo = FALSE}
-    mean1 <- mean(stepsPerDay)
-    median1 <- median(stepsPerDay)
-    mean2 <- mean(stepsPerDay2)
-    median2 <- median(stepsPerDay2)
-    ```
+
 
 Case | Mean | Median
 --- | --- | --- 
-1 | `r mean1` | `r median1`
-2 | `r mean2` | `r median2`
+1 | 9354.2295 | 10395
+2 | 1.0766 &times; 10<sup>4</sup> | 1.0766 &times; 10<sup>4</sup>
 
   
   It can be seen in the previous table that both mean and median values are smaller in the first case, where missing values where present in the data (and ignored in the computation). When missing values are filled in, they could increase or reduce the mean number of steps per day. In this case, as an average, there are more new values greater than the previous mean, so it is increased a bit.
@@ -131,29 +160,39 @@ Case | Mean | Median
 Using the dataset with the filled in missing values, weekend data are extracted using the `weekdays()` function. 
 
 1. The next chunk of code creates a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is weekday or weekend day: 
-    ```{r getlocale, echo = FALSE}
-    locale <- Sys.getlocale('LC_TIME')
-    Sys.setlocale('LC_TIME', 'English')
+    
+    ```
+    ## [1] "English_United States.1252"
     ```
 
-    ```{r weekends, echo = TRUE}
+    
+    ```r
     dayNames <- weekdays(data.completed$date, abbreviate=T)
     weekday <- factor(dayNames == 'Sun' | dayNames == 'Sat', labels = c('weekday', 'weekend'))
     data.completed$weekday <- weekday
     ```
     
-    ```{r setlocale, echo = FALSE}
-    Sys.getlocale('LC_TIME', locale)
+    
+    ```
+    ## Error: unused argument (locale)
     ```
     
 
 2. The next figure contains a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis):
 
-    ```{r panelplot, echo = TRUE}
+    
+    ```r
     avgStepsByWeekdays <- with(data.completed, 
                 aggregate(steps, by = list(interval, weekday), FUN = mean))
     names(avgStepsByWeekdays) <- c("Time", "Day", "Steps") 
     require(ggplot2)
+    ```
+    
+    ```
+    ## Loading required package: ggplot2
+    ```
+    
+    ```r
     p <- qplot(Time, Steps, data = avgStepsByWeekdays, 
     facets = Day ~.) + 
     geom_point(size=3, colour="magenta", alpha=0.2) + 
@@ -162,5 +201,7 @@ Using the dataset with the filled in missing values, weekend data are extracted 
     labs(x='Interval', y='Number of steps')
     print(p)
     ```
+    
+    ![plot of chunk panelplot](figure/panelplot.png) 
 
     It can be seen in the previous figure that the activity starts a bit later for the weekends data than during the week. In both cases, the maximum activity period is in the morning around 9:00 am, and this peak is greater for weekdays than during the weekend. However, for the rest of the day the walking activity during weekdays is smaller and finishes a bit earlier in the evenings, around 20:00 pm.
