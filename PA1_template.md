@@ -41,13 +41,17 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
     mean(stepsPerDay)
     ```
     
-    [1] 9354
+    ```
+    ## [1] 9354
+    ```
     
     ```r
     median(stepsPerDay)
     ```
     
-    [1] 10395
+    ```
+    ## [1] 10395
+    ```
 
 ## What is the average daily activity pattern?
 
@@ -130,13 +134,17 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
     mean(stepsPerDayCompleted)
     ```
     
-    [1] 10766
+    ```
+    ## [1] 10766
+    ```
     
     ```r
     median(stepsPerDayCompleted)
     ```
     
-    [1] 10766
+    ```
+    ## [1] 10766
+    ```
 
   The following table summarizes the results obtained before and after filling the missing values:
 

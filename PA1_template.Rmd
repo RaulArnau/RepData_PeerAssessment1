@@ -31,7 +31,7 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 
 2. Calculate the *mean* and *median* total number of steps taken per day.
         
-    ```{r simplestats, echo =  TRUE, results = "asis"}
+    ```{r simplestats, echo =  TRUE}
     mean(stepsPerDay)
     median(stepsPerDay)
     ```
@@ -99,7 +99,7 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
     stepsPerDayCompleted <- stepsPerDayCompleted$x
     hist(stepsPerDayCompleted, breaks = length(daysCompleted))
     ```
-    ```{r mean2, results = 'asis', echo = TRUE}
+    ```{r mean2, echo = TRUE}
     mean(stepsPerDayCompleted)
     median(stepsPerDayCompleted)
    ```
