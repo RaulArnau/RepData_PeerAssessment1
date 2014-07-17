@@ -116,24 +116,24 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 
     
     ```r
-    stepsPerDay2 <- with(data.completed, aggregate(steps, 
+    stepsPerDayCompleted <- with(data.completed, aggregate(steps, 
                                     by = list(data$date), 
                                     FUN = sum))
-    days2 <- stepsPerDay2$Group.1
-    stepsPerDay2 <- stepsPerDay2$x
-    hist(stepsPerDay2, breaks = length(days2))
+    daysCompleted <- stepsPerDayCompleted$Group.1
+    stepsPerDayCompleted <- stepsPerDayCompleted$x
+    hist(stepsPerDayCompleted, breaks = length(daysCompleted))
     ```
     
     ![plot of chunk histogram3](figure/histogram3.png) 
     
     ```r
-    mean(stepsPerDay2)
+    mean(stepsPerDayCompleted)
     ```
     
     [1] 10766
     
     ```r
-    median(stepsPerDay2)
+    median(stepsPerDayCompleted)
     ```
     
     [1] 10766
@@ -160,10 +160,7 @@ Case | Mean | Median
 Using the dataset with the filled in missing values, weekend data are extracted using the `weekdays()` function. 
 
 1. The next chunk of code creates a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is weekday or weekend day: 
-    
-    ```
-    ## [1] "English_United States.1252"
-    ```
+
 
     
     ```r
@@ -172,10 +169,7 @@ Using the dataset with the filled in missing values, weekend data are extracted 
     data.completed$weekday <- weekday
     ```
     
-    
-    ```
-    ## Error: unused argument (locale)
-    ```
+
     
 
 2. The next figure contains a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis):
@@ -194,11 +188,11 @@ Using the dataset with the filled in missing values, weekend data are extracted 
     
     ```r
     p <- qplot(Time, Steps, data = avgStepsByWeekdays, 
-    facets = Day ~.) + 
-    geom_point(size=3, colour="magenta", alpha=0.2) + 
-    geom_line(colour="blue", alpha=0.7) + 
-    theme_light() + 
-    labs(x='Interval', y='Number of steps')
+                facets = Day ~.) + 
+            geom_point(size=3, colour="magenta", alpha=0.2) + 
+            geom_line(colour="blue", alpha=0.7) + 
+            theme_light() + 
+            labs(x='Interval', y='Number of steps')
     print(p)
     ```
     
